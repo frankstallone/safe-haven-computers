@@ -17,7 +17,7 @@ class Mappress_Options extends Mappress_Obj {
 		$deregister,
 		$directions = 'google',
 		$directionsServer = 'https://maps.google.com',
-		$engine = 'google',
+		$engine = 'leaflet',
 		$filter,
 		$footer = true,
 		$iconScale,

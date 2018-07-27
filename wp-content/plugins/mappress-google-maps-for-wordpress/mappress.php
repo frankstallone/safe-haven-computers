@@ -4,7 +4,7 @@ Plugin Name: MapPress Maps for WordPress
 Plugin URI: https://www.mappresspro.com/mappress
 Author URI: https://www.mappresspro.com/chris-contact
 Description: MapPress makes it easy to add Google and Leaflet Maps to WordPress
-Version: 2.49.6
+Version: 2.49.7
 Author: Chris Richardson
 Text Domain: mappress-google-maps-for-wordpress
 Thanks to all the translators and to Matthias Stasiak for his wonderful icons (http://code.google.com/p/google-maps-icons/)
@@ -35,7 +35,7 @@ if (is_dir(dirname( __FILE__ ) . '/pro')) {
 }
 
 class Mappress {
-	const VERSION = '2.49.6';
+	const VERSION = '2.49.7';
 
 	static
 		$baseurl,
@@ -166,7 +166,7 @@ class Mappress {
 
 	static function get_support_links($title = 'MapPress') {
 		$html = "<div class='mapp-support'>" . self::get_version_string();
-		$html .= " | <a target='_blank' href='https://mappresspro.com/mappress/mappress-beta'>" . __('Documentation', 'mappress-google-maps-for-wordpress') . "</a>";
+		$html .= " | <a target='_blank' href='https://mappresspro.com/mappress/mappress-documentation'>" . __('Documentation', 'mappress-google-maps-for-wordpress') . "</a>";
 		$html .= " | <a target='_blank' href='https://mappresspro.com/chris-contact'>" . __('Support', 'mappress-google-maps-for-wordpress') . "</a>";
 		if (!self::$pro)
 			$html .= "<a class='button button-primary' href='https://mappresspro.com/mappress' target='_blank'>" . __('Upgrade to MapPress Pro', 'mappress-google-maps-for-wordpress') . "</a>";
@@ -663,25 +663,40 @@ class Mappress {
 
 		// Baselayers - mapbox or OSM
 		if (self::$options->engine == 'leaflet') {
-			$baselayers = array();
 
-			if (self::$options->mapbox) {
-				$defaults = array(
+			// Set providers
+			$l10n['options']['providers'] = apply_filters('mappress_tile_providers', array(
+				'mapbox' => array(
 					'accessToken' => self::$options->mapbox,
 					'attribution' => "<a href='https://www.mapbox.com/about/maps/' target='_blank'>&copy; Mapbox &copy; OpenStreetMap</a> <a class='mapbox-improve-map' href='https://www.mapbox.com/map-feedback/' target='_blank'>" . __('Improve this map', 'mappress-google-maps-for-wordpress') . "</a>",
 					'url' => 'https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/256/{z}/{x}/{y}?access_token={accessToken}',
 					'tileSize' => 256,
 					'zoomOffset' => 0
+				),
+				'mapbox-studio' => array(),
+				'osm' => array(
+					'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+					'url' => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+				)
+			));
+
+			// Set baselayers
+			$baselayers = array();
+			if (self::$options->mapbox) {
+				$baselayers = array(
+					array('provider' => 'mapbox', 'id' => 'streets-v10', 'name' => 'streets', 'label' => __('Streets', 'mappress-google-maps-for-wordpress')),
+					array('provider' => 'mapbox', 'id' => 'outdoors-v10', 'name' => 'outdoors', 'label' => __('Outdoors', 'mappress-google-maps-for-wordpress')),
+					array('provider' => 'mapbox', 'id' => 'light-v9', 'name' => 'light', 'label' => __('Light', 'mappress-google-maps-for-wordpress')),
+					array('provider' => 'mapbox', 'id' => 'dark-v9', 'name' => 'dark', 'label' => __('Dark', 'mappress-google-maps-for-wordpress')),
+					array('provider' => 'mapbox', 'id' => 'satellite-v9', 'name' => 'satellite', 'label' => __('Satellite', 'mappress-google-maps-for-wordpress')),
+					array('provider' => 'mapbox', 'id' => 'satellite-streets-v10', 'name' => 'satellite-streets', 'label' => __('Satellite Streets', 'mappress-google-maps-for-wordpress'))
 				);
-				$baselayers[] = array_merge($defaults, array('id' => 'streets-v10', 'name' => 'streets', 'label' => __('Streets', 'mappress-google-maps-for-wordpress')));
-				$baselayers[] = array_merge($defaults, array('id' => 'outdoors-v10', 'name' => 'outdoors', 'label' => __('Outdoors', 'mappress-google-maps-for-wordpress')));
-				$baselayers[] = array_merge($defaults, array('id' => 'light-v9', 'name' => 'light', 'label' => __('Light', 'mappress-google-maps-for-wordpress')));
-				$baselayers[] = array_merge($defaults, array('id' => 'dark-v9', 'name' => 'dark', 'label' => __('Dark', 'mappress-google-maps-for-wordpress')));
-				$baselayers[] = array_merge($defaults, array('id' => 'satellite-v9', 'name' => 'satellite', 'label' => __('Satellite', 'mappress-google-maps-for-wordpress')));
-				$baselayers[] = array_merge($defaults, array('id' => 'satellite-streets-v10', 'name' => 'satellite-streets', 'label' => __('Satellite Streets', 'mappress-google-maps-for-wordpress')));
 			} else {
-				$baselayers = array(array('id' => 'osm', 'name' => 'osm', 'attribution' => 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors', 'url' => 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
+				$baselayers = array(
+					array('provider' => 'osm', 'id' => 'osm', 'name' => 'osm')
+				);
 			}
+
 			$l10n['options']['baseLayers'] = apply_filters('mappress_baselayers', $baselayers);
 		}
 

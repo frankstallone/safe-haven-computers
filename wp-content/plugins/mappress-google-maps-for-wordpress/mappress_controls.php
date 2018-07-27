@@ -108,7 +108,7 @@ class Mappress_Controls {
 		$html = '';
 		if ($url) {
 			if (substr($url, 0, 1) == '#')
-				$url = "http://mappresspro.com/mappress-beta$url";
+				$url = "http://mappresspro.com/mappress-documentation$url";
 			$html .= sprintf("<a class='mapp-help' href='%s' target='_blank'>%s</a>", $url, $icon);
 		}
 		if ($text)

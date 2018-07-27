@@ -43,6 +43,7 @@
 			<input data-mapp-media='cancel' class='button' type='button' value='<?php esc_attr_e('Cancel', 'mappress-google-maps-for-wordpress'); ?>' />
 			<input data-mapp-media='insert' class='button' type='button' value='<?php esc_attr_e('Insert into post', 'mappress-google-maps-for-wordpress'); ?>' />
 		</div>
+		<div class='mapp-media-editor'></div>
 		<?php require Mappress::$basedir . "/forms/map_editor.php"; ?>
 	</div>
 </div>

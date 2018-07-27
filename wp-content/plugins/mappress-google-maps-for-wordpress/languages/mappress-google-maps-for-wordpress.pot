@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the MapPress Maps for WordPress package.
 msgid ""
 msgstr ""
-"Project-Id-Version: MapPress Maps for WordPress 2.49.6\n"
+"Project-Id-Version: MapPress Maps for WordPress 2.49.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mappress-google-maps-for-wordpress\n"
-"POT-Creation-Date: 2018-07-17 13:58:11+00:00\n"
+"POT-Creation-Date: 2018-07-25 03:37:35+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -182,27 +182,27 @@ msgstr ""
 msgid "Improve this map"
 msgstr ""
 
-#: mappress.php:676
+#: mappress.php:687
 msgid "Streets"
 msgstr ""
 
-#: mappress.php:677
+#: mappress.php:688
 msgid "Outdoors"
 msgstr ""
 
-#: mappress.php:678
+#: mappress.php:689
 msgid "Light"
 msgstr ""
 
-#: mappress.php:679
+#: mappress.php:690
 msgid "Dark"
 msgstr ""
 
-#: mappress.php:680
+#: mappress.php:691
 msgid "Satellite"
 msgstr ""
 
-#: mappress.php:681
+#: mappress.php:692
 msgid "Satellite Streets"
 msgstr ""
 
