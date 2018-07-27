@@ -1,0 +1,20 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Frank Stallone III -- Design, Development -- @frankstallone
+    Maggie Murphy -- Content Writer -- @maggiesaidwhat
+    Jacky Burke -- Editor -- @JackyVersion1
+
+# THANKS
+
+    HTML5 Boilerplate, Zurb Foundation, Media Temple,
+    Font Awesome by Dave Gandy - http://fortawesome.github.com/Font-Awesome
+    http://responsiveslides.com v1.53 by @viljamis 
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    Normalize.css, jQuery, Modernizr
+    Zurb Foundation
