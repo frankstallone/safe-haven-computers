@@ -99,7 +99,7 @@ __("Disabled because Jetpack Infinite Scroll is active");
 __("disable if maps are output using AJAX");
 __("Language for map controls");
 __("Enter token to use MapBox map tiles");
-__("Default zoom for POIs entered by lat/lng");
+__("Default zoom when displaying a single POI");
 __("Easy Google Maps");
 __("Width (px or %)");
 __("Height (px)");

@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the MapPress Maps for WordPress package.
 msgid ""
 msgstr ""
-"Project-Id-Version: MapPress Maps for WordPress 2.49.7\n"
+"Project-Id-Version: MapPress Maps for WordPress 2.49.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/mappress-google-maps-for-wordpress\n"
-"POT-Creation-Date: 2018-07-25 03:37:35+00:00\n"
+"POT-Creation-Date: 2018-08-01 01:00:32+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -53,7 +53,7 @@ msgstr ""
 msgid "Map Title"
 msgstr ""
 
-#: forms/map_media.php:20 mappress.php:645 mappress_map.php:612
+#: forms/map_media.php:20 mappress.php:651 mappress_map.php:612
 msgid "Untitled"
 msgstr ""
 
@@ -110,99 +110,99 @@ msgstr ""
 msgid "Upgrade to MapPress Pro"
 msgstr ""
 
-#: mappress.php:455
+#: mappress.php:461
 msgid "MapPress database tables are missing.  Please deactivate the plugin and activate it again to fix this."
 msgstr ""
 
-#: mappress.php:460
+#: mappress.php:466
 msgid "WARNING: MapPress is not compatible with the WP-Geo plugin.  Please deactivate or uninstall WP-Geo before using MapPress."
 msgstr ""
 
-#: mappress.php:465
+#: mappress.php:471
 msgid "A Google Maps API key is required"
 msgstr ""
 
-#: mappress.php:465
+#: mappress.php:471
 msgid "Please update your"
 msgstr ""
 
-#: mappress.php:465
+#: mappress.php:471
 msgid "MapPress Settings"
 msgstr ""
 
-#: mappress.php:475
+#: mappress.php:481
 msgid "here"
 msgstr ""
 
-#: mappress.php:476
+#: mappress.php:482
 msgid "MapPress %s uses new templates.  Please update your custom templates %s"
 msgstr ""
 
-#: mappress.php:635
+#: mappress.php:641
 msgid "Are you sure you want to delete?"
 msgstr ""
 
-#: mappress.php:636
+#: mappress.php:642
 msgid "Delete this map?"
 msgstr ""
 
-#: mappress.php:637
+#: mappress.php:643
 msgid "Google cannot return directions between those addresses.  There is no route between them or the routing information is not available."
 msgstr ""
 
-#: mappress.php:638
+#: mappress.php:644
 msgid "Error reading KML file"
 msgstr ""
 
-#: mappress.php:639
+#: mappress.php:645
 msgid "URL for KML file"
 msgstr ""
 
-#: mappress.php:640
+#: mappress.php:646
 msgid "Loading"
 msgstr ""
 
-#: mappress.php:641
+#: mappress.php:647
 msgid "Unable to get your location"
 msgstr ""
 
-#: mappress.php:642
+#: mappress.php:648
 msgid "No results"
 msgstr ""
 
-#: mappress.php:643
+#: mappress.php:649
 msgid "Save changes?"
 msgstr ""
 
-#: mappress.php:644
+#: mappress.php:650
 msgid "Shape"
 msgstr ""
 
-#: mappress.php:671
+#: mappress.php:677
 msgid "Improve this map"
 msgstr ""
 
-#: mappress.php:687
+#: mappress.php:693
 msgid "Streets"
 msgstr ""
 
-#: mappress.php:688
+#: mappress.php:694
 msgid "Outdoors"
 msgstr ""
 
-#: mappress.php:689
+#: mappress.php:695
 msgid "Light"
 msgstr ""
 
-#: mappress.php:690
+#: mappress.php:696
 msgid "Dark"
 msgstr ""
 
-#: mappress.php:691
+#: mappress.php:697
 msgid "Satellite"
 msgstr ""
 
-#: mappress.php:692
+#: mappress.php:698
 msgid "Satellite Streets"
 msgstr ""
 
@@ -416,7 +416,7 @@ msgid "Enter token to use MapBox map tiles"
 msgstr ""
 
 #: mappress_settings.php:263
-msgid "Default zoom for POIs entered by lat/lng"
+msgid "Default zoom when displaying a single POI"
 msgstr ""
 
 #: mappress_settings.php:276

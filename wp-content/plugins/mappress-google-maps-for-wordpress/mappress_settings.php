@@ -260,7 +260,7 @@ class Mappress_Settings {
 	function set_poi_zoom($name) {
 		$zooms = array_combine(range(1, 17), range(1,17));
 		echo Mappress_Controls::select($name, $zooms, (int) $this->options->poiZoom);
-		echo __("Default zoom for POIs entered by lat/lng", 'mappress-google-maps-for-wordpress');
+		echo __("Default zoom when displaying a single POI", 'mappress-google-maps-for-wordpress');
 	}
 
 	function set_post_types($name) {

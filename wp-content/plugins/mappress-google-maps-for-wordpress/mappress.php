@@ -4,7 +4,7 @@ Plugin Name: MapPress Maps for WordPress
 Plugin URI: https://www.mappresspro.com/mappress
 Author URI: https://www.mappresspro.com/chris-contact
 Description: MapPress makes it easy to add Google and Leaflet Maps to WordPress
-Version: 2.49.7
+Version: 2.49.8
 Author: Chris Richardson
 Text Domain: mappress-google-maps-for-wordpress
 Thanks to all the translators and to Matthias Stasiak for his wonderful icons (http://code.google.com/p/google-maps-icons/)
@@ -35,7 +35,7 @@ if (is_dir(dirname( __FILE__ ) . '/pro')) {
 }
 
 class Mappress {
-	const VERSION = '2.49.7';
+	const VERSION = '2.49.8';
 
 	static
 		$baseurl,
@@ -439,6 +439,12 @@ class Mappress {
 			Mappress::$options->save();
 		}
 
+		// Reset maxpois
+		if ($current_version < '2.49.8') {
+			Mappress::$options->maxPois = 0;
+			Mappress::$options->save();
+		}
+
 		update_option('mappress_version', self::VERSION);
 	}
 
@@ -520,7 +526,7 @@ class Mappress {
 		$atts = array_change_key_case($atts);
 
 		// Map options
-		foreach(array('fullscreenControl', 'mapTypeControl', 'minZoom') as $opt) {
+		foreach(array('fullscreenControl', 'mapTypeControl', 'maxZoom', 'minZoom') as $opt) {
 			$lcopt = strtolower($opt);
 			if (isset($atts[$lcopt])) {
 				$atts['mapopts'][$opt] = $atts[$lcopt];
