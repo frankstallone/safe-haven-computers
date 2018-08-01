@@ -149,6 +149,9 @@ if ( ! defined( 'WP_DEBUG' ) ) {
 
 /* That's all, stop editing! Happy Pressing. */
 
+/** Changes location where Autoptimize stores optimized files */
+define('AUTOPTIMIZE_CACHE_CHILD_DIR','/uploads/autoptimize/');
+
 if (isset($_ENV['PANTHEON_ENVIRONMENT']) && php_sapi_name() != 'cli') {
   // Redirect to https://$primary_domain in the Live environment
   if ($_ENV['PANTHEON_ENVIRONMENT'] === 'live') {
