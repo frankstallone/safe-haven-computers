@@ -119,7 +119,7 @@ function reverie_scripts_and_styles() {
     // deregister WordPress built in jQuery
     wp_deregister_script('jquery');
     // register Google jQuery
-    wp_register_script('jquery', "http" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js", false, null, true);
+    wp_register_script('jquery', "https" . ($_SERVER['SERVER_PORT'] == 443 ? "s" : "") . "://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js", false, null, true);
     
     // adding Foundation scripts file in the footer
     wp_register_script( 'foundation-js', get_template_directory_uri() . '/js/foundation/foundation.js', array( 'jquery' ), '', true );
@@ -137,7 +137,7 @@ function reverie_scripts_and_styles() {
     wp_register_script( 'main-js', get_template_directory_uri() . '/js/main.js', array( 'jquery' ), '', true );
     
     if ($is_IE) {
-       wp_register_script ( 'html5shiv', "http://html5shiv.googlecode.com/svn/trunk/html5.js" , false, true);
+       wp_register_script ( 'html5shiv', "https://html5shiv.googlecode.com/svn/trunk/html5.js" , false, true);
     }
 
     // enqueue styles and scripts
