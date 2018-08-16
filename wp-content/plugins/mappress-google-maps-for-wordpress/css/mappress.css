@@ -129,6 +129,11 @@ only screen and (min-device-pixel-ratio: 2) {
 	text-align: center;
 }
 
+.mapp-list .mapp-list-footer {
+	padding: 5px;
+	text-align: center;
+}
+
 .mapp-list .mapp-items {
 }
 
@@ -162,6 +167,11 @@ only screen and (min-device-pixel-ratio: 2) {
 .mapp-list .mapp-item .mapp-actions a {
 	text-decoration: none;
 }
+
+.mobile .mapp-actions {
+	visibility: visible;
+}
+
 
 .mapp-list .mapp-item:hover .mapp-actions {
 	color: black;
@@ -197,6 +207,10 @@ only screen and (min-device-pixel-ratio: 2) {
 
 .mapp-list .mapp-msg {
 	text-align: center;
+}
+
+.mapp-list .spinner {
+	float: none;
 }
 
 /*

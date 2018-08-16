@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: leaflet, openstreetmap, osm, mapbox, map box, google maps,google,map,maps,easy,poi,mapping,mapper,gps,lat,lon,latitude,longitude,geocoder,geocoding,georss,geo rss,geo,v3,marker,mashup,mash,api,v3,buddypress,mashup,geo,wp-geo,geo mashup,simplemap,simple,wpml
 Requires at least: 4.5
 Tested up to: 4.9
-Stable tag: 2.49.8
+Stable tag: 2.50.1
 
 == Description ==
 MapPress adds beautiful, interactive Google or Leaflet maps to WordPress.
@@ -85,6 +85,13 @@ Please see the plugin documentation pages:
 4. Get directions from any map marker
 
 == Changelog ==
+
+= 2.50.1 =
+* Fixed: updater was not correctly checking major versions, e.g. 2.50 vs 2.50.1
+
+= 2.50 =
+* Added: updated editor map list in the map editor now allows searching across all posts
+* Fixed: POI list was not refreshing when filtering in some installations
 
 = 2.49.8 =
 * Added: error message when places API not loaded

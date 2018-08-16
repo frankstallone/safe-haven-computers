@@ -14,8 +14,18 @@
 	-----------------------------------------------------------------------------------
 */
 
+.mapp-media {
+	background-color: white;
+}
+
 .mapp-media input[type="button"] {
 	vertical-align: middle;
+}
+
+/* WP uses different height, font size & padding on input elements, at different screen resolutions */
+.mapp-media input[type="text"], .mapp-media select {
+	height: auto !important;
+	padding: 3px 6px 3px 6px;
 }
 
 .mapp-media-edit-panel {
@@ -26,25 +36,33 @@
 	padding-right: 5px;
 }
 
-.mapp-media-toolbar {
+.mapp-media-edit-toolbar {
 	margin-top: 5px;
 }
 
 .mapp-media-list {
-	border-top: 1px solid lightgray;
-	margin-top: 5px;
+	max-height: 300px;
 }
 
-.mapp-media-actions {
-	visibility: hidden;
+.mapp-media-header {
+	border-bottom: 1px solid lightgray;
 }
 
-.mobile .mapp-media-actions {
-	visibility: visible;
+.mapp-media-list-toolbar {
+	padding: 5px 0 5px 0;
 }
 
-tr:hover > td > .mapp-media-actions {
-	visibility: visible;
+.mapp-media-list-toolbar * {
+	vertical-align: middle;
+}
+
+.mapp-media-search {
+	display: none;
+	float: right;
+}
+
+input.mapp-media-title {
+	width: 100%;
 }
 
 /*
@@ -498,7 +516,6 @@ span.mapp-colorpicker-toggle {
 */
 #mappress .mapp-support {
 	border-bottom: 1px solid lightgray;
-	margin-bottom: 10px;
 	padding-bottom: 10px;
 }
 

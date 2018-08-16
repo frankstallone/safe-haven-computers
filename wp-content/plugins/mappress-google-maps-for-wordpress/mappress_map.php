@@ -106,36 +106,32 @@ class Mappress_Map extends Mappress_Obj {
 
 	static function find($args) {
 		global $wpdb;
-		$args = (object) wp_parse_args($args, array('type' => 'post', 'page' => 1, 'page_size' => 20, 'postid' => null, 'title' => null));
-
 		$posts_table = $wpdb->prefix . 'mappress_posts';
+		$args = (object) wp_parse_args($args, array('type' => 'post', 'output' => 'names', 'page' => 1, 'page_size' => 20, 'postid' => null, 'search' => null));
 
-		$where = ($args->type == 'post') ? $wpdb->prepare("WHERE postid=%d", $args->postid) : $wpdb->prepare("WHERE postid<>%d", $args->postid);
+		$where = array();
+		if ($args->type == 'post')
+			$where[] = $wpdb->prepare("postid=%d", $args->postid);
 
-		if ($args->type == 'all' && $args->title)
-			$where .= $wpdb->prepare(" AND $wpdb->posts.post_title LIKE %s", '%' . $args->search . '%');
+		// Note: $wpdb->prepare uses tokens on % like queries
+		if ($args->type == 'all' && $args->search)
+			$where[] = $wpdb->prepare("$wpdb->posts.post_title LIKE %s", '%' . $args->search . '%');
+
+		$where = ($where) ? " WHERE " . implode(' AND ', $where) : '';
 
 		$limit = sprintf(" LIMIT %d, %d", ($args->page - 1) * $args->page_size, $args->page_size);
-		$sql = "SELECT SQL_CALC_FOUND_ROWS $wpdb->posts.post_title, $wpdb->posts.ID, $posts_table.mapid FROM $posts_table INNER JOIN $wpdb->posts ON ($wpdb->posts.ID = $posts_table.postid) $where $limit";
+		$sql = "SELECT SQL_CALC_FOUND_ROWS $posts_table.mapid FROM $posts_table INNER JOIN $wpdb->posts ON ($wpdb->posts.ID = $posts_table.postid) $where $limit";
 
-		$rows = $wpdb->get_results($sql);
+		$results = $wpdb->get_results($sql);
 		$found = $wpdb->get_var('SELECT FOUND_ROWS()');
 
-		$results = array();
-		foreach($rows as $row) {
-			$map = self::get($row->mapid, 'raw');
-			$results[] = array(
-				'id' => $row->mapid,
-				'postid' => $row->ID,
-				'post_title' => $row->post_title,
-				'can_edit' => current_user_can('edit_post', $row->ID),
-				'mapdata' => $map->to_json()
-			);
-		}
+		$items = array();
+		foreach($results as $result)
+			$items[] = self::get($result->mapid, 'list');
 
 		$pages = (int) ceil($found / $args->page_size);
 		$page = (int) min($args->page, $pages);
-		return (object) array('items' => $results, 'page' => $page, 'pages' => $pages);
+		return (object) array('items' => $items, 'page' => $page, 'pages' => $pages);
 	}
 
 	static function ajax_find() {
@@ -160,7 +156,22 @@ class Mappress_Map extends Mappress_Obj {
 		$mapdata = unserialize($result->obj);
 		$mapdata->postid = $result->postid;
 		$mapdata->mapid = $result->mapid;
-		return ($output == 'object') ? new Mappress_Map($mapdata) : $mapdata;
+
+		// Return an object
+		if ($output == 'object')
+			return new Mappress_Map($mapdata);
+
+		// Return list item (with post data)
+		if ($output == 'list') {
+			$post = get_post($result->postid);
+			return array(
+				'mapid' => $mapdata->mapid,
+				'map_title' => $mapdata->title,
+				'postid' => $mapdata->postid,
+				'post_title' => ($post) ? $post->post_title : null,
+				'can_edit' => current_user_can('edit_post', $mapdata->postid)
+			);
+		}
 	}
 
 	static function ajax_get() {
@@ -254,7 +265,9 @@ class Mappress_Map extends Mappress_Obj {
 			Mappress::ajax_response('Internal error, your data has not been saved!');
 
 		do_action('mappress_map_save', $mapid); 	// Use for your own developments
-		Mappress::ajax_response('OK', array('mapid' => $mapid, 'list' => self::get_map_list($postid)) );
+
+		// Re-read updated object and return it in response
+		Mappress::ajax_response('OK', self::get($mapid, 'list'));
 	}
 
 	/**
@@ -563,57 +576,6 @@ class Mappress_Map extends Mappress_Obj {
 	*/
 	static function compare_title($a, $b) {
 		return strcasecmp(strip_tags($a->title), strip_tags($b->title));
-	}
-
-	/**
-	* Get a list of maps attached to the post
-	*
-	* @param int $postid Post for which to get the list
-	* @return an array of all maps for the post or FALSE if no maps
-	*/
-	static function get_post_map_list($postid) {
-		global $wpdb;
-		$posts_table = $wpdb->prefix . 'mappress_posts';
-
-		$results = $wpdb->get_results($wpdb->prepare("SELECT postid, mapid FROM $posts_table WHERE postid = %d", $postid));
-
-		if ($results === false)
-			return false;
-
-		// Get all of the maps
-		$maps = array();
-		foreach($results as $key => $result) {
-			$map = Mappress_Map::get($result->mapid);
-			if ($map)
-				$maps[] = $map;
-		}
-		return $maps;
-	}
-
-	/**
-	* Get a list of maps for editing
-	*
-	* @param mixed $postid
-	*/
-	static function get_map_list($postid = null) {
-		global $post;
-
-		$postid = ($postid) ? $postid : $post->ID;
-		$maps = self::get_post_map_list($postid);
-
-		$actions = "<div class='mapp-actions'>"
-			. "<a href='#' data-mapp-media='edit'>" . __('Edit', 'mappress-google-maps-for-wordpress') . "</a> - "
-			. "<a href='#' data-mapp-media='insert'>" . __('Insert into post', 'mappress-google-maps-for-wordpress') . "</a> -  "
-			. "<a href='#' data-mapp-media='remove'>" . __('Delete', 'mappress-google-maps-for-wordpress') . "</a>"
-			. "</div>";
-
-		$html = "<div class='mapp-list'><div class='mapp-items'>";
-		foreach($maps as $map) {
-			$title = ($map->title) ? $map->title : __('Untitled', 'mappress-google-maps-for-wordpress');
-			$html .= "<div class='mapp-item' data-mapp-media='edit' data-mapp-mapid='$map->mapid'><span class='mapp-title'>[$map->mapid] " . esc_html($title) . "</span>$actions</div>";
-		}
-		$html .= "</div></div>";
-		return $html;
 	}
 }
 ?>
