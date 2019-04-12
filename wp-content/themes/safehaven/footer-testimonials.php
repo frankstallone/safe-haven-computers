@@ -97,7 +97,7 @@
 
     <!-- Teamviewer link -->
     <div class="hide-for-small">
-      <a href="/wp-content/uploads/TeamViewerQS_en.exe" target="_blank" class="teamviewer">
+      <a href="https://get.teamviewer.com/safehavenqs" target="_blank" class="teamviewer">
         <div class="box-yellow"><h4><img src="<?php echo get_stylesheet_directory_uri(); ?>/img/logo-teamviewer.png" alt="TeamViewer Download Link" class="left"> Quick Support</h4></div>
       </a>
     </div>
