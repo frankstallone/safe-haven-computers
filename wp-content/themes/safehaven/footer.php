@@ -49,13 +49,13 @@
                     <div class="store-hours">
                         <h3>Store Hours</h3>
                         <ul class="square">
-                            <li>Monday 10AM &mdash; 6PM</li>
-                            <li>Tuesday 10AM &mdash; 6PM</li>
-                            <li>Wednesday 10AM &mdash; 6PM</li>
-                            <li>Thursday 10AM &mdash; 6:30PM</li>
-                            <li>Friday 10AM &mdash; 6PM</li>
-                            <li>Saturday &mdash; Closed</li>
-                            <li>Sunday &mdash; Closed</li>
+                            <li>Monday 8AM - 5PM</li>
+                            <li>Tuesday 8AM - 5PM</li>
+                            <li>Wednesday 8AM - 5PM</li>
+                            <li>Thursday 8AM - 5PM</li>
+                            <li>Friday 8AM - 5PM</li>
+                            <li>Saturday - Closed</li>
+                            <li>Sunday - Closed</li>
                         </ul>
                     </div>
                 </div>
