@@ -23,21 +23,6 @@
                         </div>
                       </section>
                       <section class="section">
-                        <p class="title"><a href="#"><i class="icon-bookmark"></i> Tim</a></p>
-                        <div class="content clearfix">
-                          <div class="large-4 columns">
-                              <img src="<?php echo get_stylesheet_directory_uri(); ?>/img/photo-tim.jpg" alt="Photo of Tim Beatty" class="img-circle">
-                          </div>
-                          <div class="large-8 columns">
-                              <h3>First Computer Game</h3>
-                              <p class="small"><i class="icon-screenshot"></i> Wolfenstein 3D</p>
-                              <h3>Coffee or Red Bull?</h3>
-                              <p class="small"><i class="icon-coffee"></i> Coffee</p>
-                              <p class="small"><a href="/about/tim-beatty/">Read More <i class="icon-double-angle-right"></i></a></p>
-                          </div>
-                        </div>
-                      </section>
-                      <section class="section">
                         <p class="title"><a href="#"><i class="icon-bookmark"></i> Steve</a></a></p>
                         <div class="content clearfix">
                           <div class="large-4 columns">
