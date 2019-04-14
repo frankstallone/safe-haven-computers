@@ -265,6 +265,9 @@ only screen and (min-device-pixel-ratio: 2) {
 	text-transform: uppercase;
 }
 
+.mapp-header input[type="text"] {
+	display: inline;
+}
 
 /*
 	-----------------------------------------------------------------------------------
@@ -356,6 +359,11 @@ input.mapp-aa-input, input.mapp-aa-hint {
 	Filters
 	-----------------------------------------------------------------------------------
 */
+
+.mapp-filters-toggle {
+	vertical-align: middle;	/* Required in firefox */
+}
+
 .mapp-filters {
 	background-color: white;
 	border-bottom: 1px solid lightgray;

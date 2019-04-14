@@ -19,7 +19,7 @@ class Mappress_Template extends Mappress_Obj {
 		add_action('wp_ajax_mapp_tpl_get', array(__CLASS__, 'ajax_get'));
 		add_action('wp_ajax_mapp_tpl_save', array(__CLASS__, 'ajax_save'));
 		add_action('wp_ajax_mapp_tpl_delete', array(__CLASS__, 'ajax_delete'));
-		add_filter('mappress_poi_props', array(__CLASS__, 'filter_poi_props'), 10, 2);
+		add_filter('mappress_poi_props', array(__CLASS__, 'filter_poi_props'), 0, 3);
 
 		self::$tokens = array(
 			'address' => __('address', 'mappress-google-maps-for-wordpress'),
@@ -91,7 +91,11 @@ class Mappress_Template extends Mappress_Obj {
 
 	static function print_templates() {
 		// Parse tokens and print
-		foreach(array('map-controls', 'map-popup', 'map-loop', 'map-item', 'mashup-popup', 'mashup-loop', 'mashup-item') as $name) {
+		$names = array('map-controls', 'map-popup', 'map-loop', 'map-item');
+		if (Mappress::$pro)
+			$names = array_merge($names, array('mashup-popup', 'mashup-loop', 'mashup-item'));
+
+		foreach($names as $name) {
 			$template = self::get_template($name);
 			printf("<script type='text/html' id='mapp-tmpl-$name'>%s</script>", $template);
 		}

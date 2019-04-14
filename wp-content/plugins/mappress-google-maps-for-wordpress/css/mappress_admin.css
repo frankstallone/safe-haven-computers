@@ -44,11 +44,8 @@
 	max-height: 300px;
 }
 
-.mapp-media-header {
-	border-bottom: 1px solid lightgray;
-}
-
 .mapp-media-list-toolbar {
+	border-bottom: 1px solid lightgray;
 	padding: 5px 0 5px 0;
 }
 
@@ -213,6 +210,12 @@ input.mapp-media-title {
 
 .mapp-settings-toolbar {
 	margin-top: 10px;
+}
+
+/* Hidden submit buttons to use as form default */
+.mapp-settings-hidden-toolbar {
+	height: 0;
+	overflow: hidden;
 }
 
 /* Simulate postboxes */

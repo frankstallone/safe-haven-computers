@@ -31,16 +31,13 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 	 */
 	protected $defaults = array();
 
-
 	/**
 	 * @var  string  Option name - same as $option_name property, but now also available to static methods.
-	 * @static
 	 */
 	public static $name;
 
 	/**
 	 * @var  array  Array of defaults for individual taxonomy meta entries.
-	 * @static
 	 */
 	public static $defaults_per_term = array(
 		'wpseo_title'                 => '',
@@ -51,21 +48,23 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		'wpseo_focuskw'               => '',
 		'wpseo_linkdex'               => '',
 		'wpseo_content_score'         => '',
+		'wpseo_focuskeywords'         => '[]',
+		'wpseo_keywordsynonyms'       => '[]',
 
 		// Social fields.
 		'wpseo_opengraph-title'       => '',
 		'wpseo_opengraph-description' => '',
 		'wpseo_opengraph-image'       => '',
+		'wpseo_opengraph-image-id'    => '',
 		'wpseo_twitter-title'         => '',
 		'wpseo_twitter-description'   => '',
 		'wpseo_twitter-image'         => '',
+		'wpseo_twitter-image-id'      => '',
 	);
 
 	/**
 	 * @var  array  Available index options.
 	 *        Used for form generation and input validation.
-	 *
-	 * @static
 	 *
 	 * {@internal Labels (translation) added on admin_init via WPSEO_Taxonomy::translate_meta_options().}}
 	 */
@@ -94,7 +93,6 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		add_action( 'update_option_' . $this->option_name, array( 'WPSEO_Utils', 'flush_w3tc_cache' ) );
 	}
 
-
 	/**
 	 * Get the singleton instance of this class.
 	 *
@@ -109,7 +107,6 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		return self::$instance;
 	}
 
-
 	/**
 	 * Add extra default options received from a filter.
 	 */
@@ -120,12 +117,9 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		}
 	}
 
-
 	/**
 	 * Helper method - Combines a fixed array of default values with an options array
 	 * while filtering out any keys which are not in the defaults array.
-	 *
-	 * @static
 	 *
 	 * @param  string $option_key Option name of the option we're doing the merge for.
 	 * @param  array  $options    Optional. Current options. If not set, the option defaults for the $option_key will be returned.
@@ -176,7 +170,6 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		}
 	*/
 
-
 	/**
 	 * Validate the option.
 	 *
@@ -196,7 +189,6 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 
 			return $dirty;
 		}
-
 
 		foreach ( $dirty as $taxonomy => $terms ) {
 			/* Don't validate taxonomy - may not be registered yet and we don't want to remove valid ones. */
@@ -231,11 +223,8 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		return $clean;
 	}
 
-
 	/**
 	 * Validate the meta data for one individual term and removes default values (no need to save those).
-	 *
-	 * @static
 	 *
 	 * @param  array $meta_data New values.
 	 * @param  array $old_meta  The original values.
@@ -278,33 +267,69 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 
 				case 'wpseo_bctitle':
 					if ( isset( $meta_data[ $key ] ) ) {
-						$clean[ $key ] = WPSEO_Utils::sanitize_text_field( stripslashes( $meta_data[ $key ] ) );
+						$clean[ $key ] = WPSEO_Utils::sanitize_text_field( $meta_data[ $key ] );
 					}
 					elseif ( isset( $old_meta[ $key ] ) ) {
 						// Retain old value if field currently not in use.
 						$clean[ $key ] = $old_meta[ $key ];
 					}
 					break;
+
+				case 'wpseo_keywordsynonyms':
+					if ( isset( $meta_data[ $key ] ) && is_string( $meta_data[ $key ] ) ) {
+						// The data is stringified JSON. Use `json_decode` and `json_encode` around the sanitation.
+						$input         = json_decode( $meta_data[ $key ], true );
+						$sanitized     = array_map( array( 'WPSEO_Utils', 'sanitize_text_field' ), $input );
+						$clean[ $key ] = json_encode( $sanitized );
+					}
+					elseif ( isset( $old_meta[ $key ] ) ) {
+						// Retain old value if field currently not in use.
+						$clean[ $key ] = $old_meta[ $key ];
+					}
+					break;
+
+				case 'wpseo_focuskeywords':
+					if ( isset( $meta_data[ $key ] ) && is_string( $meta_data[ $key ] ) ) {
+						// The data is stringified JSON. Use `json_decode` and `json_encode` around the sanitation.
+						$input = json_decode( $meta_data[ $key ], true );
+
+						// This data has two known keys: `keyword` and `score`.
+						$sanitized = array();
+						foreach ( $input as $entry ) {
+							$sanitized[] = array(
+								'keyword' => WPSEO_Utils::sanitize_text_field( $entry['keyword'] ),
+								'score'   => WPSEO_Utils::sanitize_text_field( $entry['score'] ),
+							);
+						}
+
+						$clean[ $key ] = json_encode( $sanitized );
+					}
+					elseif ( isset( $old_meta[ $key ] ) ) {
+						// Retain old value if field currently not in use.
+						$clean[ $key ] = $old_meta[ $key ];
+					}
+					break;
+
 				case 'wpseo_focuskw':
 				case 'wpseo_title':
 				case 'wpseo_desc':
 				case 'wpseo_linkdex':
 				default:
 					if ( isset( $meta_data[ $key ] ) && is_string( $meta_data[ $key ] ) ) {
-						$clean[ $key ] = WPSEO_Utils::sanitize_text_field( stripslashes( $meta_data[ $key ] ) );
+						$clean[ $key ] = WPSEO_Utils::sanitize_text_field( $meta_data[ $key ] );
 					}
 
 					if ( 'wpseo_focuskw' === $key ) {
-						$clean[ $key ] = str_replace( array(
+						$search = array(
 							'&lt;',
 							'&gt;',
-							'&quot',
 							'&#96',
 							'<',
 							'>',
-							'"',
 							'`',
-						), '', $clean[ $key ] );
+						);
+
+						$clean[ $key ] = str_replace( $search, '', $clean[ $key ] );
 					}
 					break;
 			}
@@ -315,7 +340,6 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		// Only save the non-default values.
 		return array_diff_assoc( $clean, self::$defaults_per_term );
 	}
-
 
 	/**
 	 * Clean a given option value.
@@ -390,11 +414,8 @@ class WPSEO_Taxonomy_Meta extends WPSEO_Option {
 		return $option_value;
 	}
 
-
 	/**
 	 * Retrieve a taxonomy term's meta value(s).
-	 *
-	 * @static
 	 *
 	 * @param  mixed  $term     Term to get the meta value for
 	 *                          either (string) term name, (int) term id or (object) term.
