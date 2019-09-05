@@ -834,7 +834,7 @@ function LoadFieldSettings(){
 
     jQuery("#field_enable_copy_values_option").prop("checked", field.enableCopyValuesOption == true ? true : false);
     jQuery("#field_copy_values_option_default").prop("checked", field.copyValuesOptionDefault == true ? true : false);
-    var copyValueOptions = GetCopyValuesFieldsOptions(field.copyValuesFieldId, field);
+    var copyValueOptions = GetCopyValuesFieldsOptions(field.copyValuesOptionField, field);
     if(copyValueOptions.length>0){
         jQuery("#field_enable_copy_values_option").prop("disabled", false);
         jQuery("#field_copy_values_disabled").hide();
@@ -2279,6 +2279,12 @@ function StartChangePostCategoryType(type){
     return StartChangeInputType(type, field);
 }
 
+function StartChangePostCustomFieldType( type ) {
+	if ( jQuery.inArray( type, [ 'radio', 'select', 'checkbox', 'multiselect' ] ) === -1 ) {
+		field.choices = null;
+	}
+	return StartChangeInputType(type, field);
+}
 
 function EndChangeInputType(params){
     var fieldId = params.id, fieldType = params.type, fieldString = params.fieldString;

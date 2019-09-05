@@ -4,7 +4,7 @@ Plugin Name: MapPress Maps for WordPress
 Plugin URI: https://www.mappresspro.com/mappress
 Author URI: https://www.mappresspro.com/chris-contact
 Description: MapPress makes it easy to add Google and Leaflet Maps to WordPress
-Version: 2.52.4
+Version: 2.53.1
 Author: Chris Richardson
 Text Domain: mappress-google-maps-for-wordpress
 Thanks to all the translators and to Matthias Stasiak for his wonderful icons (http://code.google.com/p/google-maps-icons/)
@@ -35,7 +35,7 @@ if (is_dir(dirname( __FILE__ ) . '/pro')) {
 }
 
 class Mappress {
-	const VERSION = '2.52.4';
+	const VERSION = '2.53.1';
 
 	static
 		$baseurl,
@@ -126,7 +126,7 @@ class Mappress {
 
 		// Leaflet CSS
 		if (self::$options->engine == 'leaflet')
-			wp_enqueue_style('mappress-leaflet', self::$baseurl . "/css/leaflet/leaflet.css", null, '1.3.1');
+			wp_enqueue_style('mappress-leaflet', self::$baseurl . "/css/leaflet/leaflet.css", null, '1.4.0');
 
 		// Mappress CSS
 		if (in_array($hook, self::$pages) || $editing) {
@@ -211,14 +211,14 @@ class Mappress {
 			echo "<b>Plugin</b> " . self::$version;
 			$posts_table = $wpdb->prefix . 'mappress_posts';
 			$results = $wpdb->get_results("SELECT postid, mapid FROM $posts_table");
-			echo "<br/>postid => mapid";
+			echo "<br/>postid => mapid<br/>";
 			foreach($results as $i => $result) {
 				if ($i > 50)
 					break;
 				echo "<br/>$result->postid => $result->mapid";
 			}
 			$options = Mappress_Options::get();
-			unset($options->license, $options->apiKey, $options->apiKeyServer);
+			unset($options->mapbox, $options->license, $options->apiKey, $options->apiKeyServer);
 			echo str_replace(array("\r", "\n"), array('<br/>', '<br/>'), print_r($options, true));
 			die();
 		}
@@ -385,7 +385,8 @@ class Mappress {
 
 	static function is_footer() {
 		$infinite = class_exists( 'Jetpack' ) && Jetpack::is_module_active( 'infinite-scroll' );
-		return (is_admin() || self::$options->footer && !$infinite);
+		$rest = defined('REST_REQUEST') && REST_REQUEST;
+		return (is_admin() || $rest || self::$options->footer && !$infinite);
 	}
 
 	static function is_localhost() {
@@ -483,7 +484,7 @@ class Mappress {
 		}
 
 		// Global settings
-		$options = array('autoupdate', 'country', 'defaultIcon', 'directions', 'directionsServer', 'engine', 'iconScale', 'iwType', 'mashupBody', 'mashupClick', 'poiZoom', 'radius', 'search', 'size', 'sizes', 'style', 'tiles');
+		$options = array('autoupdate', 'country', 'defaultIcon', 'directions', 'directionsServer', 'engine', 'geocoder', 'iconScale', 'iwType', 'mashupBody', 'mashupClick', 'poiZoom', 'radius', 'search', 'size', 'sizes', 'style', 'tiles');
 		foreach($options as $option)
 			$l10n['options'][$option] = self::$options->$option;
 
@@ -504,10 +505,10 @@ class Mappress {
 		$js = ($dev) ? "http://localhost/$dev/wp-content/plugins/mappress-google-maps-for-wordpress/src" : self::$baseurl . '/js';
 
 		if (self::$options->engine == 'leaflet') {
-			wp_enqueue_script("mappress-leaflet", $js . "/leaflet/leaflet.js", null, '1.3.1', $footer);
+			wp_enqueue_script("mappress-leaflet", $js . "/leaflet/leaflet.js", null, '1.4.0', $footer);
 			wp_enqueue_script("mappress-omnivore", $js . "/leaflet/leaflet-omnivore.min.js", null, '0.3.1', $footer);
-			wp_enqueue_script("mappress-algolia-places", $js . "/algolia/placesAutocompleteDataset.min.js", null, '1.7.2', $footer);
-			wp_enqueue_script("mappress-algolia-search", $js . "/algolia/algoliasearchLite.min.js", null, '3', $footer);
+			wp_enqueue_script("mappress-algolia-places", $js . "/algolia/placesAutocompleteDataset.min.js", null, '1.16.1', $footer);
+			wp_enqueue_script("mappress-algolia-search", $js . "/algolia/algoliasearchLite.min.js", null, '3.32.0', $footer);
 
 		} else {
 			$language = self::get_language();
@@ -525,7 +526,7 @@ class Mappress {
 			wp_enqueue_script('mappress_settings', $js . "/mappress_settings$min.js", array('postbox', 'jquery', 'jquery-ui-position', 'jquery-ui-sortable'), self::$version, $footer);
 
 		// Autocomplete
-		wp_enqueue_script('mappress-algolia-autocomplete', $js . "/algolia/autocomplete.jquery.min.js", array('jquery'), self::$version, $footer);
+		wp_enqueue_script('mappress-algolia-autocomplete', $js . "/algolia/autocomplete.jquery.min.js", array('jquery'), '0.36.0', $footer);
 
 		// mappress.js includes loader, so must come after editor
 		wp_enqueue_script('mappress', $js . "/mappress$min.js", array('underscore', 'jquery'), self::$version, $footer);
@@ -629,6 +630,10 @@ class Mappress {
 
 		// No feeds
 		if (is_feed())
+			return;
+
+		// No REST requests (e.g. Gutenberg)
+		if (defined('REST_REQUEST') && REST_REQUEST)
 			return;
 
 		// Try to protect against calls to do_shortcode() in the post editor...
@@ -747,7 +752,7 @@ class Mappress {
 	static function wp_enqueue_scripts() {
 		// Leaflet CSS
 		if (self::$options->engine == 'leaflet')
-			wp_enqueue_style('mappress-leaflet', self::$baseurl . '/css/leaflet/leaflet.css', null, '1.3.1');
+			wp_enqueue_style('mappress-leaflet', self::$baseurl . '/css/leaflet/leaflet.css', null, '1.4.0');
 
 		// Mappress CSS from plugin directory
 		wp_enqueue_style('mappress', self::$baseurl . '/css/mappress.css', null, self::$version);

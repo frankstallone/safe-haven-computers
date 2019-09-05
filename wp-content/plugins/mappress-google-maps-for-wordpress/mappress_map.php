@@ -368,7 +368,7 @@ class Mappress_Map extends Mappress_Obj {
 	function check($part) {
 		switch ($part) {
 			case 'directions' :
-				return !$this->editable && Mappress::$options->directions == 'inline';
+				return !$this->editable && Mappress::$options->directions != 'google';
 
 			case 'filters' :
 			case 'filters-toggle' :

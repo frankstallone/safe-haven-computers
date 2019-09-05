@@ -19,6 +19,7 @@ class Mappress_Options extends Mappress_Obj {
 		$engine = 'leaflet',
 		$filter,
 		$footer = true,
+		$geocoder,
 		$iconScale,
 		$initialOpenInfo,
 		$iwType = 'iw',
@@ -26,10 +27,10 @@ class Mappress_Options extends Mappress_Obj {
 		$layout = 'left',
 		$license,
 		$mapbox,
-		$mapboxCache = 0,
 		$mapboxStyles = array(),
 		$mashupBody = 'poi',
 		$mashupClick = 'poi',
+		$mashupKml,
 		$metaKeys = array(),
 		$metaSyncSave = true,
 		$poiList = false,
@@ -85,10 +86,11 @@ class Mappress_Settings {
 		$this->add_section('basic', __('Basic Settings', 'mappress-google-maps-for-wordpress'));
 		$this->add_field('engine', __('Mapping Engine', 'mappress-google-maps-for-wordpress'), 'basic');
 
-		if ($this->options->engine == 'leaflet')
+		if ($this->options->engine == 'leaflet') {
 			$this->add_field('mapbox', __('Mapbox access token', 'mappress-google-maps-for-wordpress'), 'basic');
-		else
+		} else {
 			$this->add_field('apiKey', __('Google API key', 'mappress-google-maps-for-wordpress'), 'basic');
+		}
 
 		// License: single blogs, or main blog on multisite
 		if (Mappress::$pro && (!is_multisite() || (is_super_admin() && is_main_site())) )

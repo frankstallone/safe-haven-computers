@@ -1451,7 +1451,7 @@ class GFFormsModel {
 
 		// If property is trash, log user login
 		if ( $property_name == 'status' && $property_value == 'trash' && ! empty( $current_user->user_login ) ) {
-			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested moving of entry #{$lead_id} to trash." );		
+			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested moving of entry #{$lead_id} to trash." );
 		}
 
 		//updating lead
@@ -1574,8 +1574,8 @@ class GFFormsModel {
 
 		// Log user login for user requesting the deletion of entries
 		if ( ! empty( $current_user->user_login ) ) {
-			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested deletion of entries: " . json_encode( $entry_ids ) );		
-		}	
+			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested deletion of entries: " . json_encode( $entry_ids ) );
+		}
 
 			foreach ( $entry_ids as $entry_id ) {
 
@@ -1640,7 +1640,7 @@ class GFFormsModel {
 		// Log user login for user requesting deletion of views
 		if ( ! empty( $current_user->user_login ) ) {
 			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested deletion of views for form #{$form_id}." );
-		}			
+		}
 
 		$form_view_table = self::get_form_view_table_name();
 
@@ -1667,7 +1667,7 @@ class GFFormsModel {
 		// Log user login for user requesting deletion of form
 		if ( ! empty( $current_user->user_login ) ) {
 			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested deletion of form #{$form_id}." );
-		}			
+		}
 
         /**
          * Fires before a form is deleted
@@ -1722,7 +1722,7 @@ class GFFormsModel {
 		// Log user login for user moving the form to trash
 		if ( ! empty( $current_user->user_login ) ) {
 			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested moving of form #{$form_id} to trash." );
-		}		
+		}
 		$form_table_name = self::get_form_table_name();
 		$sql             = $wpdb->prepare( "UPDATE $form_table_name SET is_trash=1 WHERE id=%d", $form_id );
 		$result          = $wpdb->query( $sql );
@@ -2478,7 +2478,7 @@ class GFFormsModel {
 
 		// Log if user requested deletion of entries
 		if ( ! empty( $current_user->user_login ) ) {
-			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested deletion of entry #{$entry_id}" );			
+			GFCommon::log_debug( __METHOD__ . "(): User ID {$current_user->ID} requested deletion of entry #{$entry_id}" );
 		}
 
 		if ( version_compare( GFFormsModel::get_database_version(), '2.3-dev-1', '<' ) ) {
@@ -2618,6 +2618,15 @@ class GFFormsModel {
 		self::save_entry( $form, $entry );
 	}
 
+	/**
+	 * Save Entry to database.
+	 *
+	 * @since 2.4.8.13 Updated created_by property to save as an empty value when undefined.
+	 * @since Unknown
+	 *
+	 * @param array $form  Form object.
+	 * @param array $entry Entry object.
+	 */
 	public static function save_entry( $form, &$entry ) {
 		global $wpdb, $current_user;
 
@@ -2660,7 +2669,7 @@ class GFFormsModel {
 		if ( $is_new_lead ) {
 			// Saving the new entry.
 
-			$user_id = $current_user && $current_user->ID ? $current_user->ID : 'NULL';
+			$user_id = $current_user && $current_user->ID ? $current_user->ID : null;
 
 			$user_agent = self::truncate( rgar( $_SERVER, 'HTTP_USER_AGENT' ), 250 );
 			$user_agent = sanitize_text_field( $user_agent );
@@ -2677,7 +2686,29 @@ class GFFormsModel {
 
 			$ip = rgars( $form, 'personalData/preventIP' ) ? '' : self::get_ip();
 
-			$wpdb->query( $wpdb->prepare( "INSERT INTO $entry_table(form_id, ip, source_url, date_created, date_updated, user_agent, currency, created_by) VALUES(%d, %s, %s, %s, %s, %s, %s, {$user_id})", $form['id'], $ip, $source_url, $current_date, $current_date, $user_agent, $currency ) );
+			$wpdb->insert(
+				$entry_table,
+				array(
+					'form_id'      => $form['id'],
+					'ip'           => $ip,
+					'source_url'   => $source_url,
+					'date_created' => $current_date,
+					'date_updated' => $current_date,
+					'user_agent'   => $user_agent,
+					'currency'     => $currency,
+					'created_by'   => $user_id,
+				),
+				array(
+					'form_id'      => '%d',
+					'ip'           => '%s',
+					'source_url'   => '%s',
+					'date_created' => '%s',
+					'date_updated' => '%s',
+					'user_agent'   => '%s',
+					'currency'     => '%s',
+					'created_by'   => '%s',
+				)
+			);
 
 			// Reading newly created lead id
 			$lead_id = $wpdb->insert_id;
@@ -3323,7 +3354,13 @@ class GFFormsModel {
 				break;
 
 			case 'ends_with' :
+				// If target value is a 0 set $val2 to 0 rather than the empty string it currently is to prevent false positives.
+				if ( empty( $val2 ) ) {
+					$val2 = 0;
+				}
+
 				$start = strlen( $val1 ) - strlen( $val2 );
+
 				if ( $start < 0 ) {
 					return false;
 				}
@@ -5028,14 +5065,26 @@ class GFFormsModel {
 			}
 
 		} else {
-			// Deleting details for this field
-			$sql    = $wpdb->prepare( "DELETE FROM $entry_meta_table_name WHERE entry_id=%d AND meta_key = %s ", $entry_id, $input_id );
-			if ( $item_index ) {
-				$sql .= $wpdb->prepare( ' AND item_index=%s', $item_index );
-			}
-			$result = $wpdb->query( $sql );
-			if ( false === $result ) {
-				return false;
+			// when the value is empty and no $entry_meta_id was set, check if it's a repeater field.
+			if ( empty( $entry_meta_id ) && $field instanceof GF_Field_Repeater && isset( $field->fields ) && is_array( $field->fields ) ) {
+				foreach ( $field->fields as $subfield ) {
+					self::update_entry_field_value( $form, $entry, $subfield, 0, $subfield->id, '' );
+				}
+			} else {
+				// Deleting details for this field
+				if ( is_array( $field->get_entry_inputs() ) ) {
+					$_input_id = ( false === strpos( $input_id, '.' ) ) ? sprintf( '%d.%%', $input_id ) : $input_id;
+					$sql = $wpdb->prepare( "DELETE FROM $entry_meta_table_name WHERE entry_id=%d AND meta_key LIKE %s ", $entry_id, $_input_id );
+				} else {
+					$sql = $wpdb->prepare( "DELETE FROM $entry_meta_table_name WHERE entry_id=%d AND meta_key = %s ", $entry_id, $input_id );
+				}
+				if ( $item_index ) {
+					$sql .= $wpdb->prepare( ' AND item_index=%s', $item_index );
+				}
+				$result = $wpdb->query( $sql );
+				if ( false === $result ) {
+					return false;
+				}
 			}
 		}
 
@@ -5376,6 +5425,9 @@ class GFFormsModel {
 		$legacy_tables = GF_Forms_Model_Legacy::get_legacy_tables();
 
 		$drop_tables = array_merge( $drop_tables, $legacy_tables );
+
+		// Prevent the legacy table query notice when they are dropped by wp_uninitialize_site().
+		remove_filter( 'query', array( 'GFForms', 'filter_query' ) );
 
 		return $drop_tables;
 	}
@@ -7079,7 +7131,7 @@ class GFFormsModel {
 
 		$recent_form_ids = get_user_meta( $current_user_id, 'gform_recent_forms', true );
 
-		if ( empty( $recent_form_ids ) ) {
+		if ( empty( $recent_form_ids ) || ! is_array( $recent_form_ids ) ) {
 			$all_form_ids    = self::get_form_ids();
 			$all_form_ids    = array_reverse( $all_form_ids );
 			$recent_form_ids = array_slice( $all_form_ids, 0, 10 );

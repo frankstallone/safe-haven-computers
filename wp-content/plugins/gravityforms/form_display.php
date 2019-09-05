@@ -1087,8 +1087,8 @@ class GFFormDisplay {
 				$scroll_position = array( 'default' => '', 'confirmation' => '' );
 
 				if ( $anchor['scroll'] !== false ) {
-					$scroll_position['default']      = is_numeric( $anchor['scroll'] ) ? 'jQuery(document).scrollTop(' . intval( $anchor['scroll'] ) . ');' : "jQuery(document).scrollTop(jQuery('#gform_wrapper_{$form_id}').offset().top);";
-					$scroll_position['confirmation'] = is_numeric( $anchor['scroll'] ) ? 'jQuery(document).scrollTop(' . intval( $anchor['scroll'] ) . ');' : "jQuery(document).scrollTop(jQuery('{$anchor['id']}').offset().top);";
+					$scroll_position['default']      = is_numeric( $anchor['scroll'] ) ? 'jQuery(document).scrollTop(' . intval( $anchor['scroll'] ) . ');' : "jQuery(document).scrollTop(jQuery('#gform_wrapper_{$form_id}').offset().top - mt);";
+					$scroll_position['confirmation'] = is_numeric( $anchor['scroll'] ) ? 'jQuery(document).scrollTop(' . intval( $anchor['scroll'] ) . ');' : "jQuery(document).scrollTop(jQuery('{$anchor['id']}').offset().top - mt);";
 				}
 
 				$iframe_style = defined( 'GF_DEBUG' ) && GF_DEBUG ? 'display:block;width:600px;height:300px;border:1px solid #eee;' : 'display:none;width:0px;height:0px;';
@@ -1110,6 +1110,7 @@ class GFFormDisplay {
 							"var is_confirmation = jQuery(this).contents().find('#gform_confirmation_wrapper_{$form_id}').length > 0;" .
 							"var is_redirect = contents.indexOf('gformRedirect(){') >= 0;" .
 							'var is_form = form_content.length > 0 && ! is_redirect && ! is_confirmation;' .
+							"var mt = parseInt(jQuery('html').css('margin-top'), 10) + parseInt(jQuery('body').css('margin-top'), 10) + 100;" .
 							'if(is_form){' .
 								"jQuery('#gform_wrapper_{$form_id}').html(form_content.html());" .
 				                "if(form_content.hasClass('gform_validation_error')){jQuery('#gform_wrapper_{$form_id}').addClass('gform_validation_error');} else {jQuery('#gform_wrapper_{$form_id}').removeClass('gform_validation_error');}" .
@@ -2212,7 +2213,7 @@ class GFFormDisplay {
 
 			//get parameter value if pre-populate is enabled
 			if ( $field->allowsPrepopulate ) {
-				if ( $input_type == 'checkbox' ) {
+				if ( $input_type == 'checkbox' || $input_type == 'multiselect' ) {
 					$field_val = RGFormsModel::get_parameter_value( $field->inputName, $field_values, $field );
 					if ( ! is_array( $field_val ) ) {
 						$field_val = explode( ',', $field_val );
@@ -2220,7 +2221,7 @@ class GFFormDisplay {
 				} elseif ( is_array( $inputs ) ) {
 					$field_val = array();
 					foreach ( $inputs as $input ) {
-						$field_val["input_{$input['id']}"] = RGFormsModel::get_parameter_value( rgar( $input, 'name' ), $field_values, $field );
+						$field_val[ $input['id'] ] = RGFormsModel::get_parameter_value( rgar( $input, 'name' ), $field_values, $field );
 					}
 				} elseif ( $input_type == 'time' ) { // maintained for backwards compatibility. The Time field now has an inputs array.
 					$parameter_val = RGFormsModel::get_parameter_value( $field->inputName, $field_values, $field );
@@ -2264,16 +2265,26 @@ class GFFormDisplay {
 					$is_prepopulated    = is_array( $field_val ) ? in_array( $choice['value'], $field_val ) : $choice['value'] == $field_val;
 					$is_choice_selected = rgar( $choice, 'isSelected' ) || $is_prepopulated;
 
-					if ( $is_choice_selected && $input_type == 'select' ) {
-						$price = GFCommon::to_number( rgar( $choice, 'price' ) ) == false ? 0 : GFCommon::to_number( rgar( $choice, 'price' ) );
-						$val   = $is_pricing_field && $field->type != 'quantity' ? $choice['value'] . '|' . $price : $choice['value'];
-						$default_values[ $field->id ] = $val;
-					} elseif ( $is_choice_selected ) {
-						if ( ! isset( $default_values[ $field->id ] ) ) {
-							$default_values[ $field->id ] = array();
+					if ( $is_choice_selected ) {
+						// Select
+						if ( $input_type == 'select' ) {
+							$price                        = GFCommon::to_number( rgar( $choice, 'price' ) ) == false ? 0 : GFCommon::to_number( rgar( $choice, 'price' ) );
+							$val                          = $is_pricing_field && $field->type != 'quantity' ? $choice['value'] . '|' . $price : $choice['value'];
+							$default_values[ $field->id ] = $val;
 						}
-
-						$default_values[ $field->id ][] = "choice_{$form['id']}_{$field->id}_{$choice_index}";
+						else {
+							if ( ! isset( $default_values[ $field->id ] ) ) {
+								$default_values[ $field->id ] = array();
+							}
+							// Multiselect
+							if ( $input_type == 'multiselect' ) {
+								$default_values[ $field->id ][] = $choice['value'];
+							}
+							// Checkboxes & Radio Buttons
+							else {
+								$default_values[ $field->id ][] = "choice_{$form['id']}_{$field->id}_{$choice_index}";
+							}
+						}
 					}
 					$choice_index ++;
 				}
@@ -2546,15 +2557,13 @@ class GFFormDisplay {
 				$error_style   = $rte_enabled ? ' ginput_counter_error' : '';
 
 				$field_script =
-					"jQuery('#{$input_id}').textareaCount(" .
-					"    {" .
-					"    'maxCharacterSize': {$max_length}," .
+					"if(!jQuery('#{$input_id}+.ginput_counter').length){jQuery('#{$input_id}').textareaCount(" .
+					"    {'maxCharacterSize': {$max_length}," .
 					"    'originalStyle': 'ginput_counter{$tinymce_style}'," .
 					"	 'truncate': {$truncate}," .
 					"	 'errorStyle' : '{$error_style}'," .
 					"    'displayFormat' : '#input " . esc_js( __( 'of', 'gravityforms' ) ) . ' #max ' . esc_js( __( 'max characters', 'gravityforms' ) ) . "'" .
-					"    } );" .
-					"jQuery('#{$input_id}').next( '.ginput_counter' ).attr( 'aria-live', 'polite' );";
+					"    });" . "jQuery('{$input_id}').next('.ginput_counter').attr('aria-live','polite');}";
 
 				$script .= gf_apply_filters( array( 'gform_counter_script', $form['id'] ), $field_script, $form['id'], $input_id, $max_length, $field );
 			}
