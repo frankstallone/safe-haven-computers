@@ -89,7 +89,7 @@
                       <li><img src="<?php echo get_stylesheet_directory_uri(); ?>/img/shc-slides-02.png" alt="Partners"></li>
                       <li><img src="<?php echo get_stylesheet_directory_uri(); ?>/img/shc-slides-03.png" alt="Partners"></li>
                     </ul>
-                    <p class="small right">Safe Haven Computers &reg; 2013 | All Rights Reserved. | Designed by Hoverboard</p>
+                    <p class="small right">Safe Haven Computers &reg; 2019 | All Rights Reserved. | Designed by <a href="http://stallone.dev">Hoverboard Media</a></p>
                 </div>
             </div>
         </footer><!-- /box-grey partners -->
