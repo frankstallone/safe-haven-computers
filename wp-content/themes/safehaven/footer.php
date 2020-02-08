@@ -1,48 +1,6 @@
             </div><!-- /row -->
         </article>
 
-        <div class="box-orange shc-tech">
-            <div class="row">
-              <!-- <div class="group"><i class="icon-group"></i></div> -->
-                <div class="large-12 columns">
-
-                    <div class="section-container tabs" data-section="tabs">
-                      <section class="section">
-                        <p class="title"><a href="#"><i class="icon-bookmark"></i> Frank</a></p>
-                        <div class="content clearfix">
-                          <div class="large-4 columns">
-                              <img src="<?php echo get_stylesheet_directory_uri(); ?>/img/photo-frank.jpg" alt="Photo of Frank Senkewicz" class="img-circle">
-                          </div>
-                          <div class="large-8 columns">
-                              <h3>Most important piece of a computer</h3>
-                              <p class="small"><i class="icon-user"></i> The piece between the keyboard/mouse  and monitor</p>
-                              <h3>Favorite hobby</h3>
-                              <p class="small"><i class="icon-trophy"></i> Playing Ice Hockey</p>
-                              <p class="small"><a href="/about/frank-senkewicz/">Read More <i class="icon-double-angle-right"></i></a></p>
-                          </div>
-                        </div>
-                      </section>
-                      <section class="section">
-                        <p class="title"><a href="#"><i class="icon-bookmark"></i> Steve</a></a></p>
-                        <div class="content clearfix">
-                          <div class="large-4 columns">
-                              <img src="<?php echo get_stylesheet_directory_uri(); ?>/img/photo-steve.jpg" alt="Photo of Steve Merzena" class="img-circle">
-                          </div>
-                          <div class="large-8 columns">
-                              <h3>First Computer</h3>
-                              <p class="small"><i class="icon-hdd"></i> TRS-80 Color Computer</p>
-                              <h3>Coffee or Red Bull?</h3>
-                              <p class="small"><i class="icon-coffee"></i> Bonta Microlot from Counter Culture Coffee. Almost a drug </p>
-                              <p class="small"><a href="/about/steve-merzena/">Read More <i class="icon-double-angle-right"></i></a></p>
-                          </div>
-                        </div>
-                      </section>
-
-                    </div><!-- /section-container tabs -->
-
-                </div><!-- /large-12 columns -->
-            </div>
-        </div>
         <div class="box-red shc-location">
             <div class="row">
                 <div class="large-4 columns">
