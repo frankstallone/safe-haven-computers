@@ -7,11 +7,11 @@
                     <div class="store-hours">
                         <h3>Store Hours</h3>
                         <ul class="square">
-                            <li>Monday 8AM - 5PM</li>
-                            <li>Tuesday 8AM - 5PM</li>
-                            <li>Wednesday 8AM - 5PM</li>
-                            <li>Thursday 8AM - 5PM</li>
-                            <li>Friday 8AM - 5PM</li>
+                            <li>Monday 9AM - 5PM</li>
+                            <li>Tuesday 9AM - 5PM</li>
+                            <li>Wednesday 9AM - 5PM</li>
+                            <li>Thursday 9AM - 5PM</li>
+                            <li>Friday 9AM - 5PM</li>
                             <li>Saturday - Closed</li>
                             <li>Sunday - Closed</li>
                         </ul>
