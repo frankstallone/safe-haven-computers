@@ -610,7 +610,7 @@ header .name {
 
 .marketing-area {
     height: 450px;
-    background: transparent url('../img/headway-5QgIuuBxKwM-unsplash.jpg') no-repeat center top;
+    background: transparent url('../img/headway-5QgIuuBxKwM-unsplash.jpg') no-repeat center center;
     width: 100%;
     background-size: cover;
     overflow: visible;
